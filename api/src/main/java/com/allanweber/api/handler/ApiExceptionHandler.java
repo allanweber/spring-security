@@ -25,10 +25,10 @@ public class ApiExceptionHandler {
     private static final String CONSTRAINT_MESSAGE = "Constraints violations found.";
     private static final String NOTFOUND_MESSAGE = "Not found exception happened.";
 
-    @ExceptionHandler(value = {HttpClientErrorException.class, RestClientException.class})
-    public ResponseEntity<ResponseErrorDto> handleClientException(Exception ex) {
+    @ExceptionHandler(value = {HttpClientErrorException.class})
+    public ResponseEntity<ResponseErrorDto> handleClientException(HttpClientErrorException ex) {
         log.error(UNEXPECTED_ERROR_HAPPENED, ex);
-        return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body(new ResponseErrorDto(ex.getMessage()));
+        return ResponseEntity.status(ex.getStatusCode()).body(new ResponseErrorDto(ex.getMessage()));
     }
 
     @ExceptionHandler(value = {NotFoundException.class})

@@ -38,6 +38,25 @@ public class UserService implements UserDetailsService {
     public List<UserEntity> getAll(){
         List<UserEntity> users = new ArrayList<>();
         userRepository.findAll().forEach(users::add);
-        return users.stream().peek(user -> user.setPassword(null)).collect(Collectors.toList());
+        return users.stream().map(user ->
+                new UserDto(user.getId(), user.getUsername(), user.getFirstname(), user.getLastname(), user.getEmail(), user.getEnabled()))
+                .collect(Collectors.toList());
+    }
+
+    public Boolean userNameExists(String userName) {
+        return userRepository.existsByUsername(userName);
+    }
+
+    public Boolean emailExists(String email) {
+        return userRepository.existsByEmail(email);
+    }
+
+    public UserDto createUser(User userToCreate) {
+        User user = userRepository.save(userToCreate);
+
+        Authority authority = Authority.create(user.getUsername(), "USER");
+        authorityRepository.save(authority);
+
+        return new UserDto(user.getId(), user.getUsername(), user.getFirstname(), user.getLastname(), user.getEmail(), user.getEnabled());
     }
 }

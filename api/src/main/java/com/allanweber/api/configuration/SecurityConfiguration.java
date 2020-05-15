@@ -14,27 +14,31 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @RequiredArgsConstructor
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
-	private final UserService userService;
+    private static final String[] PUBLIC_PATH = new String[]{"/h2-console/**", "/registration/**"};
+	private static final String[] ADMIN_PATH = new String[]{"/admin/contacts/**", "/users/**"};
+
+    private final UserService userService;
 
     @Override
     protected void configure(HttpSecurity httpSecurity) throws Exception {
-		httpSecurity.authorizeRequests().antMatchers("/h2-console/**").permitAll()
-                .antMatchers("/admin/contacts/**", "/users/**").hasRole("ADMIN")
-				.anyRequest().hasRole("USER")
-				.and()
+
+        httpSecurity.authorizeRequests().antMatchers(PUBLIC_PATH).permitAll()
+                .antMatchers(ADMIN_PATH).hasRole("ADMIN")
+                .anyRequest().hasRole("USER")
+                .and()
                 .httpBasic();
 
-		httpSecurity.csrf().disable();
-		httpSecurity.headers().frameOptions().disable();
+        httpSecurity.csrf().disable();
+        httpSecurity.headers().frameOptions().disable();
     }
 
-	@Override
-	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-		auth.userDetailsService(userService).passwordEncoder(passwordEncoder());
-	}
+    @Override
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+        auth.userDetailsService(userService).passwordEncoder(passwordEncoder());
+    }
 
-	@Bean
-	public PasswordEncoder passwordEncoder() {
-		return new BCryptPasswordEncoder();
-	}
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
 }

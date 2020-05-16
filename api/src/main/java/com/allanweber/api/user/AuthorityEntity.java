@@ -1,8 +1,6 @@
 package com.allanweber.api.user;
 
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -21,8 +19,8 @@ public class AuthorityEntity {
 
     private String authority;
 
-    public static Authority create(String username, String authority) {
-        Authority auth = new Authority();
+    public static AuthorityEntity create(String username, String authority) {
+        AuthorityEntity auth = new AuthorityEntity();
         auth.setUsername(username);
         auth.setAuthority(authority);
         return auth;

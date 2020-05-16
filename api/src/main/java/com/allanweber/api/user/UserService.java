@@ -35,7 +35,7 @@ public class UserService implements UserDetailsService {
         return org.springframework.security.core.userdetails.User.withUsername(user.getUsername()).password(user.getPassword()).roles(roles).build();
     }
 
-    public List<UserEntity> getAll(){
+    public List<UserDto> getAll(){
         List<UserEntity> users = new ArrayList<>();
         userRepository.findAll().forEach(users::add);
         return users.stream().map(user ->
@@ -51,10 +51,10 @@ public class UserService implements UserDetailsService {
         return userRepository.existsByEmail(email);
     }
 
-    public UserDto createUser(User userToCreate) {
-        User user = userRepository.save(userToCreate);
+    public UserDto createUser(UserEntity userToCreate) {
+        UserEntity user = userRepository.save(userToCreate);
 
-        Authority authority = Authority.create(user.getUsername(), "USER");
+        AuthorityEntity authority = AuthorityEntity.create(user.getUsername(), "USER");
         authorityRepository.save(authority);
 
         return new UserDto(user.getId(), user.getUsername(), user.getFirstname(), user.getLastname(), user.getEmail(), user.getEnabled());

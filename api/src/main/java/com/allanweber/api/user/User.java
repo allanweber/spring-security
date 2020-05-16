@@ -30,6 +30,8 @@ public class User {
 
     private Boolean enabled;
 
+    private Boolean verified;
+
     public static User create(String username, String firstname, String lastname, String password, String email) {
         User user = new User();
         user.setUsername(username);
@@ -38,6 +40,11 @@ public class User {
         user.setPassword(password);
         user.setEmail(email);
         user.setEnabled(true);
+        user.setVerified(false);
         return user;
+    }
+
+    public void verified() {
+        this.setVerified(true);
     }
 }

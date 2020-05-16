@@ -2,8 +2,10 @@ package com.allanweber.api.user;
 
 import org.springframework.data.repository.CrudRepository;
 
+import java.util.Optional;
+
 public interface UserRepository  extends CrudRepository<User, String> {
-    User findByUsername(String userName);
+    Optional<User> findByUsername(String userName);
 
     Boolean existsByUsername(String userName);
 

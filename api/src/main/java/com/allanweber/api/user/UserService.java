@@ -19,10 +19,8 @@ public class UserService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String userName) throws UsernameNotFoundException {
-        User user = userRepository.findByUsername(userName);
-        if (user == null) {
-            throw new UsernameNotFoundException(userName);
-        }
+        User user = userRepository.findByUsername(userName)
+                .orElseThrow(() -> new UsernameNotFoundException(userName));
 
         List<Authority> authorities = authorityRepository.findByUsername(userName);
 
@@ -32,7 +30,8 @@ public class UserService implements UserDetailsService {
 
         String[] roles = authorities.stream().map(Authority::getAuthority).toArray(String[]::new);
 
-        return org.springframework.security.core.userdetails.User.withUsername(user.getUsername()).password(user.getPassword()).roles(roles).build();
+        return org.springframework.security.core.userdetails.User.
+                withUsername(user.getUsername()).password(user.getPassword()).roles(roles).disabled(!user.getVerified()).build();
     }
 
     public List<UserDto> getAll() {
@@ -58,5 +57,12 @@ public class UserService implements UserDetailsService {
         authorityRepository.save(authority);
 
         return new UserDto(user.getId(), user.getUsername(), user.getFirstname(), user.getLastname(), user.getEmail(), user.getEnabled());
+    }
+
+    public void serUserVerified(String userName) {
+        User user = userRepository.findByUsername(userName)
+                .orElseThrow(() -> new UsernameNotFoundException(userName));
+        user.verified();
+        userRepository.save(user);
     }
 }

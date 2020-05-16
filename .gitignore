@@ -38,3 +38,4 @@ spring-*/src/main/java/META-INF/MANIFEST.MF
 .idea
 out
 test-output
+contactDB.mv.db

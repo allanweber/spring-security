@@ -1,7 +1,7 @@
 package com.allanweber.api.registration;
 
-import com.allanweber.api.user.User;
 import com.allanweber.api.user.UserDto;
+import com.allanweber.api.user.UserEntity;
 import com.allanweber.api.user.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -17,7 +17,7 @@ public class UserRegistrationService {
 
     public UserDto register(UserRegistration user) {
         String password = encoder.encode(user.getPassword());
-        User userEntity = User.create(user.getUserName(),user.getFirstName(),user.getLastName(), password, user.getEmail());
+        UserEntity userEntity = UserEntity.create(user.getUserName(),user.getFirstName(),user.getLastName(), password, user.getEmail());
         return userService.createUser(userEntity);
     }
 }

@@ -1,8 +1,6 @@
 package com.allanweber.api.user;
 
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -29,8 +27,8 @@ public class UserEntity {
 
     private Boolean enabled;
 
-    public static User create(String username, String firstname, String lastname, String password, String email) {
-        User user = new User();
+    public static UserEntity create(String username, String firstname, String lastname, String password, String email) {
+        UserEntity user = new UserEntity();
         user.setUsername(username);
         user.setFirstname(firstname);
         user.setLastname(lastname);

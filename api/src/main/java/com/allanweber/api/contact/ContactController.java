@@ -23,17 +23,17 @@ public class ContactController {
     private final ContactService contactService;
 
     @GetMapping
-    private ResponseEntity<List<Contact>> getAll() {
+    public ResponseEntity<List<Contact>> getAll() {
         return ok(contactService.getAllPersons());
     }
 
     @GetMapping("/{id}")
-    private ResponseEntity<Contact> get(@PathVariable("id") int id) {
+    public ResponseEntity<Contact> get(@PathVariable("id") int id) {
         return ok(contactService.getPersonById(id));
     }
 
     @PostMapping
-    private ResponseEntity<Contact> save(@RequestBody Contact contact) {
+    public ResponseEntity<Contact> save(@RequestBody Contact contact) {
         var response = contactService.save(contact);
 
         return created(URI.create(String.format("/contacts/%s", response.getId()))).body(response);

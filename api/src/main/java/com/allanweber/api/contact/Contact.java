@@ -1,7 +1,6 @@
 package com.allanweber.api.contact;
 
 import lombok.Data;
-import lombok.Getter;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;

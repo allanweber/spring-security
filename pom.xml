@@ -52,6 +52,38 @@
                     <target>11</target>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-pmd-plugin</artifactId>
+                <version>3.12.0</version>
+                <executions>
+                    <execution>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>check</goal>
+                            <goal>cpd-check</goal>
+                            <goal>pmd</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <linkXRef>false</linkXRef>
+                    <targetJdk>${java.version}</targetJdk>
+                    <minimumTokens>80</minimumTokens>
+                    <skipEmptyReport>false</skipEmptyReport>
+                    <failOnViolation>true</failOnViolation>
+                    <printFailingErrors>true</printFailingErrors>
+<!--                    <excludes>-->
+<!--                        <exclude>**/*Handler.java</exclude>-->
+<!--                    </excludes>-->
+<!--                    <excludeRoots>-->
+<!--                        <excludeRoot>target/generated-sources</excludeRoot>-->
+<!--                    </excludeRoots>-->
+                    <rulesets>
+                        <ruleset>${project.basedir}/pmd/pmd-ruleset.xml</ruleset>
+                    </rulesets>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 </project>

@@ -19,20 +19,19 @@ public class UserService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String userName) {
-        UserEntity user = userRepository.findByUsername(userName);
-        if (user == null) {
-            throw new UsernameNotFoundException(userName);
-        }
 
         List<AuthorityEntity> authorities = authorityRepository.findByUsername(userName);
-
         if(authorities == null || authorities.isEmpty()) {
             throw new UsernameNotFoundException("No authorities for the user");
         }
 
         String[] roles = authorities.stream().map(AuthorityEntity::getAuthority).toArray(String[]::new);
 
-        return org.springframework.security.core.userdetails.User.withUsername(user.getUsername()).password(user.getPassword()).roles(roles).build();
+        UserEntity user = userRepository.findByUsername(userName)
+                .orElseThrow(() -> new UsernameNotFoundException(userName));
+
+        return org.springframework.security.core.userdetails.User.
+                withUsername(user.getUsername()).password(user.getPassword()).roles(roles).disabled(!user.getVerified()).build();
     }
 
     public List<UserDto> getAll(){
@@ -58,5 +57,12 @@ public class UserService implements UserDetailsService {
         authorityRepository.save(authority);
 
         return new UserDto(user.getId(), user.getUsername(), user.getFirstname(), user.getLastname(), user.getEmail(), user.getEnabled());
+    }
+
+    public void setUserVerified(String userName) {
+        UserEntity user = userRepository.findByUsername(userName)
+                .orElseThrow(() -> new UsernameNotFoundException(userName));
+        user.markVerified();
+        userRepository.save(user);
     }
 }

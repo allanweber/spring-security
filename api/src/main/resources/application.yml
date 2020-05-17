@@ -32,3 +32,5 @@ spring:
           timeout: 5000
           writetimeout: 5000
     username: allanweberdevtests
+application:
+  email-verification-enabled: false

@@ -1,4 +1,4 @@
-package com.allanweber.api.registration.verification;
+package com.allanweber.api.two_factor;
 
 import lombok.Getter;
 import org.hibernate.annotations.GenericGenerator;
@@ -9,7 +9,7 @@ import javax.persistence.Id;
 
 @Entity
 @Getter
-public class Verification {
+public class TwoFactor {
 
     @Id
     @GeneratedValue(generator = "uuid2")
@@ -18,10 +18,13 @@ public class Verification {
 
     private String username;
 
-    public Verification(String username) {
+    private String secret;
+
+    public TwoFactor(String username, String secret) {
         this.username = username;
+        this.secret = secret;
     }
 
-    public Verification() {
+    public TwoFactor() {
     }
 }

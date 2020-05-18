@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.net.URI;
+import java.security.Principal;
 import java.util.List;
 
 import static org.springframework.http.ResponseEntity.created;
@@ -23,7 +24,7 @@ public class ContactController {
     private final ContactService contactService;
 
     @GetMapping
-    public ResponseEntity<List<Contact>> getAll() {
+    public ResponseEntity<List<Contact>> getAll(Principal principal) {
         return ok(contactService.getAllPersons());
     }
 

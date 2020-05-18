@@ -1,6 +1,9 @@
 package com.allanweber.api.user;
 
+import com.allanweber.api.two_factor.AuthoritiesHelper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -20,21 +23,31 @@ public class UserService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String userName) {
 
-        List<AuthorityEntity> authorities = authorityRepository.findByUsername(userName);
-        if(authorities == null || authorities.isEmpty()) {
+        List<AuthorityEntity> authorityEntities = authorityRepository.findByUsername(userName);
+        if (authorityEntities == null || authorityEntities.isEmpty()) {
             throw new UsernameNotFoundException("No authorities for the user");
         }
 
-        String[] roles = authorities.stream().map(AuthorityEntity::getAuthority).toArray(String[]::new);
+        UserEntity user = userRepository.findByUsername(userName).orElseThrow(() -> new UsernameNotFoundException(userName));
 
-        UserEntity user = userRepository.findByUsername(userName)
-                .orElseThrow(() -> new UsernameNotFoundException(userName));
-
+        List<String> authorities = new ArrayList<>();
+        if (user.getTwoFactor()) {
+            authorities.add(AuthoritiesHelper.TWO_AUTH_AUTHORITY);
+        } else {
+            authorities.add(AuthoritiesHelper.ROLE_USER);
+            if(authorityEntities.stream().anyMatch(auth -> auth.getAuthority().equals("ADMIN"))){
+                authorities.add("ROLE_ADMIN");
+            }
+        }
         return org.springframework.security.core.userdetails.User.
-                withUsername(user.getUsername()).password(user.getPassword()).roles(roles).disabled(!user.getVerified()).build();
+                withUsername(user.getUsername())
+                .password(user.getPassword())
+                .disabled(!user.getVerified())
+                .authorities(buildAuthorities(authorities))
+                .build();
     }
 
-    public List<UserDto> getAll(){
+    public List<UserDto> getAll() {
         List<UserEntity> users = new ArrayList<>();
         userRepository.findAll().forEach(users::add);
         return users.stream().map(user ->
@@ -64,5 +77,28 @@ public class UserService implements UserDetailsService {
                 .orElseThrow(() -> new UsernameNotFoundException(userName));
         user.markVerified();
         userRepository.save(user);
+    }
+
+    public void enableTwoFactorAuthentication(Integer userId) {
+        changeTwoFactorAuthentication(userId, true);
+    }
+
+    public void disableTwoFactorAuthentication(Integer userId) {
+        changeTwoFactorAuthentication(userId, false);
+    }
+
+    private void changeTwoFactorAuthentication(Integer userId, boolean value) {
+        UserEntity user = userRepository.findById(userId)
+                .orElseThrow(() -> new UsernameNotFoundException(userId.toString()));
+        user.setTwoFactor(value);
+        userRepository.save(user);
+    }
+
+    private List<GrantedAuthority> buildAuthorities(List<String> authorities) {
+        List<GrantedAuthority> authList = new ArrayList<>(1);
+        for (String authority : authorities) {
+            authList.add(new SimpleGrantedAuthority(authority));
+        }
+        return authList;
     }
 }

@@ -2,14 +2,15 @@ drop table if exists authorities;
 drop table if exists users;
 create table users
 (
-    id        int(11)                 NOT NULL auto_increment primary key,
-    username  varchar_ignorecase(50)  not null,
-    password  varchar_ignorecase(256) not null,
-    email     varchar(100)            not null,
-    enabled   boolean                 not null,
-    firstname varchar_ignorecase(256) not null,
-    lastname  varchar_ignorecase(256) not null,
-    verified  boolean                 not null default true
+    id         int(11)                 NOT NULL auto_increment primary key,
+    username   varchar_ignorecase(50)  not null,
+    password   varchar_ignorecase(256) not null,
+    email      varchar(100)            not null,
+    enabled    boolean                 not null,
+    firstname  varchar_ignorecase(256) not null,
+    lastname   varchar_ignorecase(256) not null,
+    verified   boolean                 not null default true,
+    two_factor boolean                 not null default false
 );
 
 create table authorities

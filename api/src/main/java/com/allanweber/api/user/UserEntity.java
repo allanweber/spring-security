@@ -29,6 +29,8 @@ public class UserEntity {
 
     private Boolean verified;
 
+    private Boolean twoFactor;
+
     public static UserEntity create(String username, String firstname, String lastname, String password, String email) {
         UserEntity user = new UserEntity();
         user.setUsername(username);
@@ -38,10 +40,15 @@ public class UserEntity {
         user.setEmail(email);
         user.setEnabled(true);
         user.setVerified(false);
+        user.setTwoFactor(false);
         return user;
     }
 
     public void markVerified() {
         this.setVerified(true);
+    }
+
+    public void enableTwoFactor() {
+        this.setTwoFactor(true);
     }
 }

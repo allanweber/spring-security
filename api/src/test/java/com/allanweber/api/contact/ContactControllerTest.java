@@ -6,7 +6,6 @@ import com.allanweber.api.contact.repository.Contact;
 import com.allanweber.api.contact.repository.ContactRepository;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,12 +41,6 @@ class ContactControllerTest {
     private ContactRepository repository;
 
     private final ContactMapper mapper = Mappers.getMapper(ContactMapper.class);
-
-    @BeforeEach
-    public void setUp() {
-        repository.findAll()
-                .forEach(contact -> repository.delete(contact));
-    }
 
     @Test
     public void postContact() throws Exception {

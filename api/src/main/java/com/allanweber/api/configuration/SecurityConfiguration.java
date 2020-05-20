@@ -18,7 +18,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity httpSecurity) throws Exception {
-		httpSecurity.authorizeRequests().antMatchers("/h2-console/**").permitAll()
+		httpSecurity.authorizeRequests()
                 .antMatchers("/admin/contacts/**", "/users/**").hasRole("ADMIN")
 				.anyRequest().hasRole("USER")
 				.and()

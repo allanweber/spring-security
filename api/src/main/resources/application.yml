@@ -4,16 +4,7 @@ management:
       base-path: /
 
 spring:
-  datasource:
-    url: jdbc:h2:file:./contactDB;DB_CLOSE_ON_EXIT=FALSE
-    driverClassName: org.h2.Driver
-    username: sa
-    password:
-  jpa:
-    database-platform: org.hibernate.dialect.H2Dialect
-    hibernate:
-      ddl-auto: update
-    show-sql: on
-  h2:
-    console:
-      enabled: true
+  data:
+    mongodb:
+      database: contacts
+      uri: mongodb://${MONGO_HOST:localhost:27017}/contacts?serverSelectionTimeoutMS=2000&connectTimeoutMS=2000

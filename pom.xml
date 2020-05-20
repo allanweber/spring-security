@@ -30,17 +30,6 @@
             <artifactId>spring-boot-configuration-processor</artifactId>
             <optional>true</optional>
         </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-test</artifactId>
-            <scope>test</scope>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.junit.vintage</groupId>
-                    <artifactId>junit-vintage-engine</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
     </dependencies>
     <build>
         <plugins>
@@ -73,12 +62,9 @@
                     <skipEmptyReport>false</skipEmptyReport>
                     <failOnViolation>true</failOnViolation>
                     <printFailingErrors>true</printFailingErrors>
-<!--                    <excludes>-->
-<!--                        <exclude>**/*Handler.java</exclude>-->
-<!--                    </excludes>-->
-<!--                    <excludeRoots>-->
-<!--                        <excludeRoot>target/generated-sources</excludeRoot>-->
-<!--                    </excludeRoots>-->
+                    <excludeRoots>
+                        <excludeRoot>target/generated-sources</excludeRoot>
+                    </excludeRoots>
                     <rulesets>
                         <ruleset>${project.basedir}/pmd/pmd-ruleset.xml</ruleset>
                     </rulesets>

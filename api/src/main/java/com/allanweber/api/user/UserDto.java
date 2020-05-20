@@ -1,21 +1,26 @@
 package com.allanweber.api.user;
 
+import com.allanweber.api.user.repository.Authority;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 @AllArgsConstructor
-@Getter
+@NoArgsConstructor
+@Data
 public class UserDto {
 
-    private Integer id;
+    private String userName;
 
-    private String username;
+    private String firstName;
 
-    private String firstname;
-
-    private String lastname;
+    private String lastName;
 
     private String email;
 
     private Boolean enabled;
+
+    private List<Authority> authorities;
 }

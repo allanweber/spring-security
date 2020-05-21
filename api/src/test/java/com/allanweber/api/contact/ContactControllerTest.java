@@ -73,7 +73,7 @@ class ContactControllerTest {
         when(repository.insert(any(Contact.class))).thenReturn(entity);
 
         MockHttpServletResponse response = mockMvc.perform(post("/contacts")
-                .with(httpBasic("user","123"))
+                .with(httpBasic("user", "123"))
                 .contentType("application/json")
                 .content(objectMapper.writeValueAsString(dto)))
                 .andExpect(status().isCreated())
@@ -91,7 +91,7 @@ class ContactControllerTest {
         when(repository.findById(id)).thenReturn(Optional.of(contact));
 
         MockHttpServletResponse response = mockMvc.perform(get("/contacts/{id}", id)
-                .with(httpBasic("user","123")))
+                .with(httpBasic("user", "123")))
                 .andExpect(status().isOk())
                 .andReturn()
                 .getResponse();
@@ -110,12 +110,13 @@ class ContactControllerTest {
         when(repository.findAll()).thenReturn(contacts);
 
         MockHttpServletResponse response = mockMvc.perform(get("/contacts")
-                .with(httpBasic("user","123")))
+                .with(httpBasic("user", "123")))
                 .andExpect(status().isOk())
                 .andReturn()
                 .getResponse();
 
-        List<ContactDto> dtos = objectMapper.readValue(response.getContentAsString(), new TypeReference<>() {});
+        List<ContactDto> dtos = objectMapper.readValue(response.getContentAsString(), new TypeReference<>() {
+        });
 
         assertEquals(2, dtos.size());
         assertEquals("123", dtos.get(0).getId());
@@ -127,7 +128,7 @@ class ContactControllerTest {
         String id = "123";
 
         mockMvc.perform(delete("/admin/contacts/{id}", id)
-                .with(httpBasic("user","123")))
+                .with(httpBasic("user", "123")))
                 .andExpect(status().isForbidden())
                 .andReturn();
     }
@@ -138,18 +139,44 @@ class ContactControllerTest {
         ContactDto dto = new ContactDto(id, "name", 1, "email", "phone");
 
         mockMvc.perform(put("/admin/contacts/{id}", id)
-                .with(httpBasic("user","123"))
+                .with(httpBasic("user", "123"))
                 .contentType("application/json")
                 .content(objectMapper.writeValueAsString(dto)))
                 .andExpect(status().isForbidden())
                 .andReturn();
     }
+    
+    @Test
+    public void postContact_anonymous_should_fail() throws Exception {
+        ContactDto dto = new ContactDto(null, "name", 1, "email", "phone");
 
-    private void mockUserRepo(){
+        mockMvc.perform(post("/contacts")
+                .contentType("application/json")
+                .content(objectMapper.writeValueAsString(dto)))
+                .andExpect(status().isUnauthorized())
+                .andReturn();
+    }
+
+    @Test
+    public void getContactById_anonymous_should_fail() throws Exception {
+        String id = "123";
+        mockMvc.perform(get("/contacts/{id}", id))
+                .andExpect(status().isUnauthorized())
+                .andReturn();
+    }
+
+    @Test
+    public void getAll_anonymous_should_fail() throws Exception {
+        mockMvc.perform(get("/contacts"))
+                .andExpect(status().isUnauthorized())
+                .andReturn();
+    }
+
+    private void mockUserRepo() {
         when(userRepository.findById(anyString())).thenReturn(Optional.of(getUser()));
     }
 
-    private UserEntity getUser(){
+    private UserEntity getUser() {
         List<Authority> authorities = Collections.singletonList(new Authority("USER"));
         return new UserEntity(
                 "user",

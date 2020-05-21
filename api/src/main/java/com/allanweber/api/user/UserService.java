@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
+import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 @Service
 @RequiredArgsConstructor
@@ -84,5 +85,11 @@ public class UserService implements UserDetailsService {
         user.setEnabled(true);
         user.setVerified(true);
         userRepository.save(user);
+    }
+
+    public UserDto get(String userName) {
+        return userRepository.findById(userName)
+                .map(mapper::mapToDto)
+                .orElseThrow(() -> new HttpClientErrorException(NOT_FOUND, "User not found"));
     }
 }

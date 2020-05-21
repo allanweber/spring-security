@@ -10,9 +10,12 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
 
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 @Service
 @RequiredArgsConstructor
@@ -35,5 +38,11 @@ public class UserService implements UserDetailsService {
         return userRepository.findAll().stream()
                 .map(mapper::mapToDto)
                 .collect(Collectors.toList());
+    }
+
+    public UserDto get(String userName) {
+        return userRepository.findById(userName)
+                .map(mapper::mapToDto)
+                .orElseThrow(() -> new HttpClientErrorException(NOT_FOUND, "User not found"));
     }
 }

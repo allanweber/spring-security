@@ -94,6 +94,26 @@ class ContactManagementControllerTest {
         assertNotNull(responseDto.getId());
     }
 
+    @Test
+    public void deleteContact_anonymous_should_fail() throws Exception {
+        String id = "123";
+        mockMvc.perform(delete("/admin/contacts/{id}", id))
+                .andExpect(status().isUnauthorized())
+                .andReturn();
+    }
+
+    @Test
+    public void putContact_anonymous_should_fail() throws Exception {
+        String id = "123";
+        ContactDto dto = new ContactDto(id, "name", 1, "email", "phone");
+
+        mockMvc.perform(put("/admin/contacts/{id}", id)
+                .contentType("application/json")
+                .content(objectMapper.writeValueAsString(dto)))
+                .andExpect(status().isUnauthorized())
+                .andReturn();
+    }
+
     private void mockUserRepo(){
         when(userRepository.findById(anyString())).thenReturn(Optional.of(getUser()));
     }

@@ -101,7 +101,8 @@ class AuthControllerTest {
                 "$2a$10$6gT7XuiWtHR1hXHQuDb54.rG3TgUNrrpTff8WE15sf4dkmYMKyd1y",
                 "main@gmail.com",
                 true,
-                authorities
+                authorities,
+                true
         );
     }
 }

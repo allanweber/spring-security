@@ -11,11 +11,13 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import static org.springframework.http.HttpMethod.OPTIONS;
+
 @Configuration
 @RequiredArgsConstructor
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
-    private static final String[] PUBLIC_PATH = new String[]{"/h2-console/**", "/registration/**"};
+    private static final String[] PUBLIC_PATH = new String[]{"/authenticated", "/registration/**"};
     private static final String[] ADMIN_PATH = new String[]{"/admin/contacts/**", "/users/**"};
     private static final String[] AUTH_PATH = new String[]{"/auth/**"};
 
@@ -25,11 +27,12 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity httpSecurity) throws Exception {
-
         httpSecurity
                 .addFilterAfter(twoFactorAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
-                .authorizeRequests().antMatchers(PUBLIC_PATH).permitAll()
+                .authorizeRequests()
+                .antMatchers(OPTIONS, "/**").permitAll()
                 .antMatchers(AUTH_PATH).hasAuthority(AuthoritiesHelper.TWO_AUTH_AUTHORITY)
+                .antMatchers(PUBLIC_PATH).permitAll()
                 .antMatchers(ADMIN_PATH).hasRole("ADMIN")
                 .anyRequest().hasRole("USER")
                 .and()

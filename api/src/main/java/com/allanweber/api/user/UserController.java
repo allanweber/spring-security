@@ -24,15 +24,15 @@ public class UserController {
         return ok(userService.getAll());
     }
 
-    @PutMapping("/{userId}/enable-two-factor")
-    public ResponseEntity<?> enableTwoFactorAuthentication(@PathVariable("userId") Integer userId){
-        userService.enableTwoFactorAuthentication(userId);
+    @PutMapping("/{userName}/enable-two-factor")
+    public ResponseEntity<?> enableTwoFactorAuthentication(@PathVariable("userName") String userName){
+        userService.enableTwoFactorAuthentication(userName);
         return ok().build();
     }
 
-    @PutMapping("/{userId}/disable-two-factor")
-    public ResponseEntity<?> disableTwoFactorAuthentication(@PathVariable("userId") Integer userId){
-        userService.disableTwoFactorAuthentication(userId);
+    @PutMapping("/{userName}/disable-two-factor")
+    public ResponseEntity<?> disableTwoFactorAuthentication(@PathVariable("userName") String userName){
+        userService.disableTwoFactorAuthentication(userName);
         return ok().build();
     }
 }

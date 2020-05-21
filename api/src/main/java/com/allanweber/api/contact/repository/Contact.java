@@ -1,4 +1,4 @@
-package com.allanweber.api.registration.verification;
+package com.allanweber.api.contact.repository;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -6,18 +6,20 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-@Document(collection = "email_verification")
+@Document(collection = "contacts")
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class Verification {
+public class Contact {
 
     @Id
     private String id;
 
-    private String username;
+    private String name;
 
-    public Verification(String username) {
-        this.username = username;
-    }
+    private int age;
+
+    private String email;
+
+    private String phone;
 }

@@ -1,5 +1,7 @@
 package com.allanweber.api.two_factor;
 
+import com.allanweber.api.two_factor.repository.TwoFactor;
+import com.allanweber.api.two_factor.repository.TwoFactorRepository;
 import com.warrenstrange.googleauth.GoogleAuthenticator;
 import com.warrenstrange.googleauth.GoogleAuthenticatorKey;
 import com.warrenstrange.googleauth.GoogleAuthenticatorQRGenerator;
@@ -17,16 +19,16 @@ public class TwoFactorService {
     private final TwoFactorRepository twoFactorRepository;
     private static final String ISSUER = "AnyApp.com";
 
-    public String generateNewGoogleAuthQrUrl(String username) {
+    public String getTwoFactorQrCode(String username) {
         GoogleAuthenticatorKey authKey = googleAuth.createCredentials();
         String secret = authKey.getKey();
-        twoFactorRepository.deleteByUsername(username);
+        twoFactorRepository.deleteById(username);
         twoFactorRepository.save(new TwoFactor(username, secret));
         return GoogleAuthenticatorQRGenerator.getOtpAuthURL(ISSUER, username, authKey);
     }
 
     public boolean verifyCode(String username, int code) {
-        TwoFactor twoFactor = twoFactorRepository.findByUsername(username)
+        TwoFactor twoFactor = twoFactorRepository.findById(username)
                 .orElseThrow(() -> new HttpClientErrorException(NOT_FOUND, "Verification code not found for user"));
         return googleAuth.authorize(twoFactor.getSecret(), code);
     }

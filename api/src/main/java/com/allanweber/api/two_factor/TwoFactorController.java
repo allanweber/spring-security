@@ -10,7 +10,6 @@ import java.security.Principal;
 
 import static org.springframework.http.ResponseEntity.ok;
 
-@SuppressWarnings("PMD")
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/auth")
@@ -19,7 +18,7 @@ public class TwoFactorController {
     private final TwoFactorService twoFactorService;
 
     @GetMapping("/setup-two-factor")
-    public ResponseEntity<?> setUpTwoFactor(Principal principal) {
-        return ok(twoFactorService.generateNewGoogleAuthQrUrl(principal.getName()));
+    public ResponseEntity<?> getTwoFactorQrCode(Principal principal) {
+        return ok(twoFactorService.getTwoFactorQrCode(principal.getName()));
     }
 }

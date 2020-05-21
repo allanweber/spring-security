@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.net.URI;
-import java.security.Principal;
 import java.util.List;
 
 import static org.springframework.http.ResponseEntity.created;
@@ -24,19 +23,18 @@ public class ContactController {
     private final ContactService contactService;
 
     @GetMapping
-    public ResponseEntity<List<Contact>> getAll(Principal principal) {
-        return ok(contactService.getAllPersons());
+    public ResponseEntity<List<ContactDto>> getAll() {
+        return ok(contactService.getAll());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Contact> get(@PathVariable("id") int id) {
-        return ok(contactService.getPersonById(id));
+    public ResponseEntity<ContactDto> get(@PathVariable("id") String id) {
+        return ok(contactService.getById(id));
     }
 
     @PostMapping
-    public ResponseEntity<Contact> save(@RequestBody Contact contact) {
-        var response = contactService.save(contact);
-
+    public ResponseEntity<ContactDto> save(@RequestBody ContactDto contact) {
+        var response = contactService.insert(contact);
         return created(URI.create(String.format("/contacts/%s", response.getId()))).body(response);
     }
 }

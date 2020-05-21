@@ -19,13 +19,13 @@ public class ContactManagementController {
     private final ContactService contactService;
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> delete(@PathVariable("id") int id) {
+    public ResponseEntity<?> delete(@PathVariable("id") String id) {
         contactService.delete(id);
         return noContent().build();
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Contact> save(@PathVariable("id") int id, @RequestBody Contact contact) {
+    public ResponseEntity<ContactDto> save(@PathVariable("id") String id, @RequestBody ContactDto contact) {
         return ResponseEntity.ok(contactService.update(id, contact));
     }
 }

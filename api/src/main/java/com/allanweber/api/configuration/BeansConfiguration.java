@@ -9,6 +9,8 @@ import org.passay.RepeatCharacterRegexRule;
 import org.passay.Rule;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,5 +38,10 @@ public class BeansConfiguration {
         passwordRules.add(passwordChars);
         passwordRules.add(new RepeatCharacterRegexRule(MAX_REPETITIVE_CHARS));
         return new PasswordValidator(passwordRules);
+    }
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
     }
 }

@@ -1,5 +1,6 @@
 package com.allanweber.api.registration.events;
 
+import com.allanweber.api.configuration.ApplicationConfiguration;
 import com.allanweber.api.registration.verification.VerificationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationListener;
@@ -13,13 +14,15 @@ public class EmailVerificationListener implements ApplicationListener<UserRegist
 
     private final JavaMailSender mailSender;
     private final VerificationService verificationService;
+    private final ApplicationConfiguration applicationConfiguration;
 
     @Override
     public void onApplicationEvent(UserRegistrationEvent userRegistrationEvent) {
-        String verificationId = verificationService.createVerification(userRegistrationEvent.getUser().getUsername());
+        String verificationId = verificationService.createVerification(userRegistrationEvent.getUser().getUserName());
         SimpleMailMessage message = new SimpleMailMessage();
         message.setSubject("New account created");
-        message.setText("Account activation link: http://localhost:8080/registration/verify/email?id=" + verificationId);
+        String text = String.format("Account activation link: %s?id=%s", applicationConfiguration.getVerificationUrl(), verificationId);
+        message.setText(text);
         message.setTo(userRegistrationEvent.getUser().getEmail());
         mailSender.send(message);
     }

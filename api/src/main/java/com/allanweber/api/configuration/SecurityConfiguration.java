@@ -8,23 +8,26 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import static org.springframework.http.HttpMethod.OPTIONS;
+
 @Configuration
 @RequiredArgsConstructor
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
-    private static final String[] PUBLIC_PATH = new String[]{"/h2-console/**", "/registration/**"};
-	private static final String[] ADMIN_PATH = new String[]{"/admin/contacts/**", "/users/**"};
+    private static final String[] PUBLIC_PATH = new String[]{ "/authenticated", "/registration/**"};
+    private static final String[] ADMIN_PATH = new String[]{"/admin/contacts/**", "/users/**"};
 
     private final UserService userService;
     private final PasswordEncoder encoder;
 
     @Override
     protected void configure(HttpSecurity httpSecurity) throws Exception {
-
-        httpSecurity.authorizeRequests().antMatchers(PUBLIC_PATH).permitAll()
+		httpSecurity.authorizeRequests()
+				.antMatchers(OPTIONS, "/**").permitAll()
+				.antMatchers(PUBLIC_PATH).permitAll()
                 .antMatchers(ADMIN_PATH).hasRole("ADMIN")
-                .anyRequest().hasRole("USER")
-                .and()
+				.anyRequest().hasRole("USER")
+				.and()
                 .httpBasic();
 
         httpSecurity.csrf().disable();

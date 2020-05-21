@@ -2,7 +2,6 @@ package com.allanweber.api.handler;
 
 import com.allanweber.api.handler.dto.ResponseErrorDto;
 import com.allanweber.api.handler.dto.ViolationDto;
-import javassist.NotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,19 +22,12 @@ import java.util.List;
 public class ApiExceptionHandler {
     private static final String UNEXPECTED_ERROR_HAPPENED = "Unexpected Error happened";
     private static final String CONSTRAINT_MESSAGE = "Constraints violations found.";
-    private static final String NOTFOUND_MESSAGE = "Not found exception happened.";
     private static final Integer SIZE = 1;
 
     @ExceptionHandler(HttpClientErrorException.class)
     public ResponseEntity<ResponseErrorDto> handleClientException(HttpClientErrorException ex) {
         log.error(UNEXPECTED_ERROR_HAPPENED, ex);
         return ResponseEntity.status(ex.getStatusCode()).body(new ResponseErrorDto(ex.getMessage()));
-    }
-
-    @ExceptionHandler(NotFoundException.class)
-    public ResponseEntity<ResponseErrorDto> handleNotFoundException(NotFoundException ex) {
-        log.error(NOTFOUND_MESSAGE, ex);
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseErrorDto(ex.getMessage()));
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)

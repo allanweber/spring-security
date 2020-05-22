@@ -1,4 +1,4 @@
-package com.allanweber.api.config;
+package com.allanweber.api.configuration;
 
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;

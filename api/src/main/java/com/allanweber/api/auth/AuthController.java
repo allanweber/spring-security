@@ -27,9 +27,14 @@ public class AuthController {
     }
 
     @GetMapping(path = "/authenticated", produces = "application/json")
-    public ResponseEntity<Boolean> authenticated(Authentication authentication) {
-        return ok(Optional.ofNullable(authentication)
+    public ResponseEntity<AuthDto> authenticated(Authentication authentication) {
+        AuthDto dto = new AuthDto(Optional.ofNullable(authentication)
                 .map(Authentication::isAuthenticated)
                 .orElse(false));
+        if(dto.isAuthenticated()){
+            assert authentication != null;
+            dto.setUser(userService.get(((User)authentication.getPrincipal()).getUsername()));
+        }
+        return ok(dto);
     }
 }

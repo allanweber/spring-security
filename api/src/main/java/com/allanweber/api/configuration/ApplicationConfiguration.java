@@ -15,4 +15,6 @@ public class ApplicationConfiguration {
 
     @NotBlank
     private String verificationUrl;
+
+    private boolean emailVerificationEnabled;
 }

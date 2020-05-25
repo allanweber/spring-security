@@ -1,5 +1,6 @@
 package com.allanweber.api.registration;
 
+import com.allanweber.api.configuration.ApplicationConfiguration;
 import com.allanweber.api.registration.verification.VerificationService;
 import com.allanweber.api.user.UserDto;
 import com.allanweber.api.user.UserService;
@@ -23,6 +24,7 @@ public class RegistrationController {
 
     private final UserService userService;
     private final VerificationService verificationService;
+    private final ApplicationConfiguration applicationConfiguration;
 
     @PostMapping("/signUp")
     public ResponseEntity<UserDto> signUp(@Valid @RequestBody UserRegistration user) {
@@ -33,5 +35,10 @@ public class RegistrationController {
     public ResponseEntity<?> verify(@RequestParam("id") String id) {
         verificationService.verify(id);
         return ok().build();
+    }
+
+    @GetMapping("/verify/enabled")
+    public ResponseEntity<Boolean> isEnabled() {
+        return ok(applicationConfiguration.isEmailVerificationEnabled());
     }
 }

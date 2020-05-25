@@ -24,6 +24,7 @@ spring:
     username: allanweberdevtests
 
 application:
+  email-verification-enabled: true
   verification-url: http://localhost:8080/registration/verify/email
 
 #logging:

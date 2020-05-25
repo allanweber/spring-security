@@ -20,8 +20,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
@@ -73,8 +75,10 @@ class AuthControllerTest {
                 .andReturn()
                 .getResponse();
 
-        Boolean authenticated = objectMapper.readValue(response.getContentAsString(), Boolean.class);
-        assertTrue(authenticated);
+        AuthDto authenticated = objectMapper.readValue(response.getContentAsString(), AuthDto.class);
+        assertTrue(authenticated.isAuthenticated());
+        assertNotNull(authenticated.getUser());
+        assertEquals("USER", authenticated.getUser().getAuthorities().get(0).getAuthority());
     }
 
     @Test
@@ -91,8 +95,9 @@ class AuthControllerTest {
                 .andReturn()
                 .getResponse();
 
-        Boolean authenticated = objectMapper.readValue(response.getContentAsString(), Boolean.class);
-        assertFalse(authenticated);
+        AuthDto authenticated = objectMapper.readValue(response.getContentAsString(), AuthDto.class);
+        assertFalse(authenticated.isAuthenticated());
+        assertNull(authenticated.getUser());
     }
 
     private void mockUserRepo() {

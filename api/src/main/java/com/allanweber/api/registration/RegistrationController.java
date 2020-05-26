@@ -38,7 +38,7 @@ public class RegistrationController {
     }
 
     @GetMapping("/verify/enabled")
-    public ResponseEntity<Boolean> isEnabled() {
+    public ResponseEntity<Boolean> enabled() {
         return ok(applicationConfiguration.isEmailVerificationEnabled());
     }
 }

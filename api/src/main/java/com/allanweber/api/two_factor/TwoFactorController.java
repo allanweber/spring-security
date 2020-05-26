@@ -19,6 +19,7 @@ public class TwoFactorController {
 
     @GetMapping("/setup-two-factor")
     public ResponseEntity<?> getTwoFactorQrCode(Principal principal) {
-        return ok(twoFactorService.getTwoFactorQrCode(principal.getName()));
+        String url = twoFactorService.getTwoFactorQrCode(principal.getName());
+        return ok(new QrCodeDto(url));
     }
 }

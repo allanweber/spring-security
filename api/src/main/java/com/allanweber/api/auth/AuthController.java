@@ -23,7 +23,7 @@ public class AuthController {
 
     @GetMapping(path = "/login", produces = "application/json")
     public ResponseEntity<UserDto> login(Authentication authentication) {
-        return ok(userService.get(((User)authentication.getPrincipal()).getUsername()));
+        return ok(userService.get(((User) authentication.getPrincipal()).getUsername()));
     }
 
     @GetMapping(path = "/authenticated", produces = "application/json")
@@ -31,9 +31,13 @@ public class AuthController {
         AuthDto dto = new AuthDto(Optional.ofNullable(authentication)
                 .map(Authentication::isAuthenticated)
                 .orElse(false));
-        if(dto.isAuthenticated()){
+        if (dto.isAuthenticated()) {
             assert authentication != null;
-            dto.setUser(userService.get(((User)authentication.getPrincipal()).getUsername()));
+            if (authentication.getPrincipal() instanceof User) {
+                dto.setUser(userService.get(((User) authentication.getPrincipal()).getUsername()));
+            } else {
+                dto.setUser(userService.get(authentication.getPrincipal().toString()));
+            }
         }
         return ok(dto);
     }

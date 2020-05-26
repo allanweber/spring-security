@@ -51,7 +51,7 @@ public class TwoFactorAuthenticationFilter extends GenericFilterBean {
                 return;
             }
             HttpServletResponse res = (HttpServletResponse) response;
-            res.sendError(HttpServletResponse.SC_FORBIDDEN);
+            res.setStatus(HttpServletResponse.SC_ACCEPTED);
         } else if (requiresTwoAuthentication(authentication) && authentication.isAuthenticated() && codeIsValid(authentication.getName(), code)) {
             Set<String> authorities = AuthorityUtils.authorityListToSet(authentication.getAuthorities());
             authorities.remove(AuthoritiesHelper.TWO_AUTH_AUTHORITY);

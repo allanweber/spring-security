@@ -1,9 +1,12 @@
 package com.allanweber.api.contact;
 
 import com.allanweber.api.Api;
+import com.allanweber.api.auth.LoginRequest;
+import com.allanweber.api.auth.LoginResponse;
 import com.allanweber.api.contact.mapper.ContactMapper;
 import com.allanweber.api.contact.repository.Contact;
 import com.allanweber.api.contact.repository.ContactRepository;
+import com.allanweber.api.jwt.JwtConstantsHelper;
 import com.allanweber.api.user.repository.Authority;
 import com.allanweber.api.user.repository.UserEntity;
 import com.allanweber.api.user.repository.UserRepository;
@@ -15,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.mock.web.MockHttpServletResponse;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
@@ -28,9 +32,9 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -45,6 +49,9 @@ class ContactManagementControllerTest {
     @Autowired
     private WebApplicationContext context;
 
+    @Autowired
+    private PasswordEncoder encoder;
+
     @MockBean
     private ContactRepository repository;
 
@@ -53,12 +60,14 @@ class ContactManagementControllerTest {
 
     private final ContactMapper mapper = Mappers.getMapper(ContactMapper.class);
 
+    private String token;
+
     @BeforeEach
-    public void setUp() {
-        mockUserRepo();
+    public void setUp() throws Exception {
         mockMvc = MockMvcBuilders
                 .webAppContextSetup(context)
                 .apply(springSecurity()).build();
+        token = login().getToken();
     }
 
     @Test
@@ -67,7 +76,7 @@ class ContactManagementControllerTest {
         doNothing().when(repository).deleteById(id);
 
         mockMvc.perform(delete("/admin/contacts/{id}", id)
-                .with(httpBasic("user","123")))
+                .header(JwtConstantsHelper.TOKEN_HEADER, JwtConstantsHelper.TOKEN_PREFIX + token))
                 .andExpect(status().isNoContent())
                 .andReturn();
     }
@@ -83,7 +92,7 @@ class ContactManagementControllerTest {
         when(repository.save(any(Contact.class))).thenReturn(entity);
 
         MockHttpServletResponse response = mockMvc.perform(put("/admin/contacts/{id}", id)
-                .with(httpBasic("user","123"))
+                .header(JwtConstantsHelper.TOKEN_HEADER, JwtConstantsHelper.TOKEN_PREFIX + token)
                 .contentType("application/json")
                 .content(objectMapper.writeValueAsString(dto)))
                 .andExpect(status().isOk())
@@ -114,20 +123,28 @@ class ContactManagementControllerTest {
                 .andReturn();
     }
 
-    private void mockUserRepo(){
-        when(userRepository.findById(anyString())).thenReturn(Optional.of(getUser()));
+    private LoginResponse login() throws Exception {
+        String user = "user";
+        String password = "123";
+        mockUserRepo(user, password, Collections.singletonList(new Authority("ADMIN")));
+        MockHttpServletResponse response = mockMvc.perform(post("/auth/login")
+                .contentType("application/json")
+                .content(objectMapper.writeValueAsString(new LoginRequest(user, password))))
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse();
+        return objectMapper.readValue(response.getContentAsString(), LoginResponse.class);
     }
 
-    private UserEntity getUser(){
-        List<Authority> authorities = Collections.singletonList(new Authority("ADMIN"));
-        return new UserEntity(
-                "user",
-                "$2a$10$6gT7XuiWtHR1hXHQuDb54.rG3TgUNrrpTff8WE15sf4dkmYMKyd1y",
+    private void mockUserRepo(String user, String password, List<Authority> authorities) {
+        UserEntity userEntity = new UserEntity(
+                user,
+                encoder.encode(password),
                 "main@gmail.com",
                 true,
                 authorities,
-                true,
-                false
+                true
         );
+        when(userRepository.findById(anyString())).thenReturn(Optional.of(userEntity));
     }
 }

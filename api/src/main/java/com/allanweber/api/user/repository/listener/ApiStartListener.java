@@ -1,5 +1,6 @@
 package com.allanweber.api.user.repository.listener;
 
+import com.allanweber.api.configuration.AuthoritiesHelper;
 import com.allanweber.api.user.repository.Authority;
 import com.allanweber.api.user.repository.UserEntity;
 import com.allanweber.api.user.repository.UserRepository;
@@ -28,15 +29,14 @@ public class ApiStartListener implements ApplicationListener<ApplicationReadyEve
         if(userRepository.findById("admin").isPresent()){
             return;
         }
-        List<Authority> authorities = Arrays.asList(new Authority("ADMIN"), new Authority("USER"));
+        List<Authority> authorities = Arrays.asList(new Authority(AuthoritiesHelper.ADMIN), new Authority(AuthoritiesHelper.USER));
         UserEntity admin = new UserEntity(
                 "admin",
                 "$2a$10$hbxecwitQQ.dDT4JOFzQAulNySFwEpaFLw38jda6Td.Y/cOiRzDFu",
                 "a.cassianoweber@gmail.com",
                 true,
                 authorities,
-                true,
-                false
+                true
         );
         userRepository.insert(admin);
     }
@@ -45,15 +45,14 @@ public class ApiStartListener implements ApplicationListener<ApplicationReadyEve
         if(userRepository.findById("user").isPresent()){
             return;
         }
-        List<Authority> authorities = Collections.singletonList(new Authority("USER"));
+        List<Authority> authorities = Collections.singletonList(new Authority(AuthoritiesHelper.USER));
         UserEntity user = new UserEntity(
                 "user",
                 "$2a$10$EUxPWS43H55VHJS6OtNdwOVtRwNprMGnwq0sXPhdwVpJo9v5oKYjO",
                 "a.cassianoweber@gmail.com",
                 true,
                 authorities,
-                true,
-                false
+                true
         );
         userRepository.insert(user);
     }

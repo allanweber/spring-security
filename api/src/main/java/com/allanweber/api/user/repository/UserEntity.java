@@ -30,18 +30,15 @@ public class UserEntity {
 
     private Boolean verified = false;
 
-    private Boolean twoFactor = false;
-
     private List<Authority> authorities;
 
-    public UserEntity(String username, String password, String email, Boolean enabled, List<Authority> authorities, Boolean verified, Boolean twoFactor) {
+    public UserEntity(String username, String password, String email, Boolean enabled, List<Authority> authorities, Boolean verified) {
         this.userName = username;
         this.password = password;
         this.email = email;
         this.enabled = enabled;
         this.authorities = authorities;
         this.verified = verified;
-        this.twoFactor = twoFactor;
     }
 
     public void addAuthority(String authority) {

@@ -1,4 +1,4 @@
-package com.allanweber.api.two_factor;
+package com.allanweber.api.auth;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -7,6 +7,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class QrCodeDto {
-    private String url;
+public class AuthUser {
+
+    private String userName;
+
+    private String name;
 }

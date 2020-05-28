@@ -161,7 +161,7 @@ class RegistrationControllerTest {
 
         String id = UUID.randomUUID().toString();
         String userName = "user";
-        UserEntity user = new UserEntity(userName, "123", "mail@mail.com", true, Collections.emptyList(), true, false);
+        UserEntity user = new UserEntity(userName, "123", "mail@mail.com", true, Collections.emptyList(), true);
 
         when(verificationRepository.findById(id)).thenReturn(Optional.of(new Verification(id, userName)));
         when(userRepository.findById(userName)).thenReturn(Optional.of(user));

@@ -1,6 +1,6 @@
 package com.allanweber.api.user.repository;
 
-import com.allanweber.api.two_factor.AuthoritiesHelper;
+import com.allanweber.api.configuration.AuthoritiesHelper;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
@@ -16,13 +16,9 @@ public class UserDetailsHelper {
 
     public static UserDetails createUserDetails(UserEntity user) {
         List<String> authorities = new ArrayList<>();
-        if (user.getTwoFactor()) {
-            authorities.add(AuthoritiesHelper.TWO_AUTH_AUTHORITY);
-        } else {
-            authorities.add(AuthoritiesHelper.ROLE_USER);
-            if( user.getAuthorities().stream().anyMatch(auth -> auth.getAuthority().equals("ADMIN"))){
-                authorities.add("ROLE_ADMIN");
-            }
+        authorities.add(AuthoritiesHelper.ROLE_USER);
+        if( user.getAuthorities().stream().anyMatch(auth -> auth.getAuthority().equals(AuthoritiesHelper.ADMIN))){
+            authorities.add(AuthoritiesHelper.ROLE_ADMIN);
         }
         return User
                 .withUsername(user.getUserName())

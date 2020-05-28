@@ -24,7 +24,5 @@ public class UserDto {
 
     private Boolean verified = false;
 
-    private Boolean twoFactor = false;
-
     private List<Authority> authorities;
 }

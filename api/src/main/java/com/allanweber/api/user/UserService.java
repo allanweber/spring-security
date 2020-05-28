@@ -92,21 +92,6 @@ public class UserService implements UserDetailsService {
         userRepository.save(user);
     }
 
-    public void enableTwoFactorAuthentication(String userName) {
-        changeTwoFactorAuthentication(userName, true);
-    }
-
-    public void disableTwoFactorAuthentication(String userName) {
-        changeTwoFactorAuthentication(userName, false);
-    }
-
-    private void changeTwoFactorAuthentication(String userName, boolean value) {
-        UserEntity user = userRepository.findById(userName)
-                .orElseThrow(() -> new UsernameNotFoundException(userName));
-        user.setTwoFactor(value);
-        userRepository.save(user);
-    }
-
     public UserDto get(String userName) {
         return userRepository.findById(userName)
                 .map(mapper::mapToDto)

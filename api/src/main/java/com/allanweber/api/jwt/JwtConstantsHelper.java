@@ -4,8 +4,6 @@ import java.util.concurrent.TimeUnit;
 
 public final class JwtConstantsHelper {
 
-    public static final String AUTH_LOGIN_URL = "/api/authenticate";
-
     // Signing key for HS512 algorithm
     // You can use the page http://www.allkeysgenerator.com/ to generate all kinds of keys
     public static final String JWT_SECRET = "B&E)H@McQfTjWnZr4u7w!z%C*F-JaNdRgUkXp2s5v8y/A?D(G+KbPeShVmYq3t6w";
@@ -18,7 +16,7 @@ public final class JwtConstantsHelper {
     public static final String TOKEN_AUDIENCE = "any-app-app";
     public static final String AUTHORITIES = "authorities";
     public static final String HEADER_TYP = "typ";
-    public static final long TOKEN_DURATION_SECONDS = TimeUnit.MINUTES.toSeconds(1);
+    public static final long TOKEN_DURATION_SECONDS = TimeUnit.HOURS.toSeconds(1);
 
     private JwtConstantsHelper() {
         throw new IllegalStateException("Cannot create instance of static util class");

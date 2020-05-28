@@ -12,6 +12,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -28,6 +29,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     private final UserService userService;
     private final PasswordEncoder encoder;
     private final AuthEntryPointJwt unauthorizedHandler;
+    private final JwtAuthorizationFilter jwtAuthorizationFilter;
 
     @Override
     protected void configure(HttpSecurity httpSecurity) throws Exception {
@@ -38,7 +40,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers(PUBLIC_PATH).permitAll()
                 .antMatchers(ADMIN_PATH).hasRole(AuthoritiesHelper.ADMIN)
                 .anyRequest().hasRole(AuthoritiesHelper.USER).and()
-                .addFilter(new JwtAuthorizationFilter(authenticationManager()))
+                .addFilterBefore(jwtAuthorizationFilter, UsernamePasswordAuthenticationFilter.class)
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         httpSecurity.cors();

@@ -81,26 +81,6 @@ class UserControllerTest {
                 .getResponse();
     }
 
-    @Test
-    public void enableTwoFactorAuthentication_shouldFail_when_UserIsNotAdmin() throws Exception {
-        String token = login("USER").getToken();
-        MockHttpServletResponse response = mockMvc.perform(put("/users/{userName}/enable-two-factor", "user")
-                .header(JwtConstantsHelper.TOKEN_HEADER, JwtConstantsHelper.TOKEN_PREFIX + token))
-                .andExpect(status().isForbidden())
-                .andReturn()
-                .getResponse();
-    }
-
-    @Test
-    public void disableTwoFactorAuthentication_shouldFail_when_UserIsNotAdmin() throws Exception {
-        String token = login("USER").getToken();
-        MockHttpServletResponse response = mockMvc.perform(put("/users/{userName}/disable-two-factor", "user")
-                .header(JwtConstantsHelper.TOKEN_HEADER, JwtConstantsHelper.TOKEN_PREFIX + token))
-                .andExpect(status().isForbidden())
-                .andReturn()
-                .getResponse();
-    }
-
     private LoginResponse login(String role) throws Exception {
         mockUserRepo(role);
         MockHttpServletResponse response = mockMvc.perform(post("/auth/login")

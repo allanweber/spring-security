@@ -30,6 +30,11 @@ public class AuthController {
         return ResponseEntity.ok(authService.refreshToken(authHeader));
     }
 
+    @GetMapping("/login-social")
+    public ResponseEntity<LoginResponse> loginSocial(@RequestHeader(HttpHeaders.AUTHORIZATION) String authHeader) {
+        return ResponseEntity.ok(authService.loginSocial(authHeader));
+    }
+
     @GetMapping("/is-admin")
     public ResponseEntity<Boolean> admin(@RequestHeader(HttpHeaders.AUTHORIZATION) String authHeader) {
         return ResponseEntity.ok(authService.isAdmin(authHeader));

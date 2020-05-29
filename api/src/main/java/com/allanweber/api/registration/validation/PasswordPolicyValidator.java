@@ -28,5 +28,4 @@ public class PasswordPolicyValidator implements ConstraintValidator<PasswordPoli
 
         return ruleResult.isValid();
     }
-
 }

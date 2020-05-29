@@ -46,6 +46,17 @@ public class AuthService {
         return new LoginResponse("bearer", tokenDto.getToken(), roles, tokenDto.getExpirationIn(), tokenDto.getIssuedAt(), authUser);
     }
 
+    public LoginResponse loginSocial(String authHeader) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        var userName = authentication.getPrincipal().toString();
+        var user = userService.loadUserByUsername(userName);
+        var roles = user.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList());
+
+        AuthUser authUser = getAuthUser(user.getUsername());
+        TokenDto tokenDto = jwtUtils.openToken(authHeader);
+        return new LoginResponse("bearer", tokenDto.getToken(), roles, tokenDto.getExpirationIn(), tokenDto.getIssuedAt(), authUser);
+    }
+
     public TokenDto refreshToken(@NotBlank String authHeader) {
         return jwtUtils.refreshToken(authHeader);
     }

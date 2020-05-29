@@ -30,10 +30,12 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     private final PasswordEncoder encoder;
     private final AuthEntryPointJwt unauthorizedHandler;
     private final JwtAuthorizationFilter jwtAuthorizationFilter;
+    private final OAuthAuthenticationSuccessHandler successHandler;
 
     @Override
     protected void configure(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
+                .oauth2Login().successHandler(successHandler).and()
                 .exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
                 .authorizeRequests()
                 .antMatchers(OPTIONS, "/**").permitAll()
@@ -45,7 +47,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         httpSecurity.cors();
         httpSecurity.csrf().disable();
-        httpSecurity.headers().frameOptions().disable();
+//        httpSecurity.headers().frameOptions().disable();
     }
 
     @Override
@@ -62,7 +64,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
-        config.addAllowedOrigin(CorsConfiguration.ALL);
+        config.addAllowedOrigin("http://localhost:4200");
         config.addAllowedMethod(CorsConfiguration.ALL);
         config.addAllowedHeader(CorsConfiguration.ALL);
         config.setAllowCredentials(true);

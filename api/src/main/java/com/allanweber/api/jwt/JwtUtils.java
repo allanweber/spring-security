@@ -31,9 +31,7 @@ public class JwtUtils {
     private static final SecretKey SECRETKEY = Keys.hmacShaKeyFor(JwtConstantsHelper.JWT_SECRET.getBytes());
 
     public TokenDto generateJwtToken(String user, List<String> roles) {
-
         Date issuedAt = DateHelper.getUTCDatetimeAsDate();
-
         String token = Jwts.builder()
                 .signWith(SECRETKEY, SignatureAlgorithm.HS512)
                 .setHeaderParam(JwtConstantsHelper.HEADER_TYP, JwtConstantsHelper.TOKEN_TYPE)
@@ -89,6 +87,13 @@ public class JwtUtils {
         TokenDto newToken = refreshTokenInternal(token);
         log.info("Jwt Token refreshed.");
         return newToken;
+    }
+
+    public TokenDto openToken(String authHeader) {
+        String token = resolveToken(authHeader);
+        var jwsClaims = parseAndValidateToken(authHeader);
+
+        return new TokenDto(token, JwtConstantsHelper.TOKEN_DURATION_SECONDS, jwsClaims.getBody().getIssuedAt());
     }
 
     public List<String> getRoles(String token) {

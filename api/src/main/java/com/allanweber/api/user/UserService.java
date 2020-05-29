@@ -1,6 +1,7 @@
 package com.allanweber.api.user;
 
 import com.allanweber.api.configuration.ApplicationConfiguration;
+import com.allanweber.api.configuration.AuthoritiesHelper;
 import com.allanweber.api.registration.UserRegistration;
 import com.allanweber.api.registration.events.UserRegistrationEvent;
 import com.allanweber.api.user.mapper.UserMapper;
@@ -26,9 +27,6 @@ import static org.springframework.http.HttpStatus.NOT_FOUND;
 @Service
 @RequiredArgsConstructor
 public class UserService implements UserDetailsService {
-
-    private static final String USER_AUTH_NAME = "USER";
-
     private final UserRepository userRepository;
     private final PasswordEncoder encoder;
     private final ApplicationEventPublisher eventPublisher;
@@ -72,10 +70,14 @@ public class UserService implements UserDetailsService {
 
         UserEntity userToSave = mapper.mapToEntity(userRegistration);
 
+        if(userRegistration.isOauth()) {
+            userToSave.setPassword(PasswordHelper.generatePassword());
+        }
+
         userToSave.setPassword(encoder.encode(userToSave.getPassword()));
         userToSave.setEnabled(!applicationConfiguration.isEmailVerificationEnabled());
         userToSave.setVerified(!applicationConfiguration.isEmailVerificationEnabled());
-        userToSave.addAuthority(USER_AUTH_NAME);
+        userToSave.addAuthority(AuthoritiesHelper.ROLE_USER);
         UserEntity userSaved = userRepository.save(userToSave);
         UserDto userDto = mapper.mapToDto(userSaved);
         if (applicationConfiguration.isEmailVerificationEnabled()) {

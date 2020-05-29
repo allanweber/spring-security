@@ -8,6 +8,19 @@ spring:
     mongodb:
       database: contacts
       uri: mongodb://${MONGO_HOST:localhost:27017}/contacts?serverSelectionTimeoutMS=2000&connectTimeoutMS=2000
+  security:
+    oauth2:
+      client:
+        registration:
+          facebook:
+            client-id: 735896047239235
+            client-secret: ce13c9c5ffc5e9f924c1e269845dda27
+          google:
+            client-id: 217462922308-m4tflhsafbmcg5j2are2cu70pgv1pokd.apps.googleusercontent.com
+            client-secret: P__DB-nXaDnk5t6Ntj_eJjSH
+          github:
+            client-id: 7c5309be056a1cb6b69c
+            client-secret: 50084beae46bf3c26fd78ae42b32ab6f87f3df9d
   mail:
     host: smtp.gmail.com
     password: NctkgDB&WeW7M5Ks

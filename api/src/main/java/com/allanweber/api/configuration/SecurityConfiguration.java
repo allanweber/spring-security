@@ -2,6 +2,8 @@ package com.allanweber.api.configuration;
 
 import com.allanweber.api.jwt.AuthEntryPointJwt;
 import com.allanweber.api.jwt.JwtAuthorizationFilter;
+import com.allanweber.api.oauth.ConnectOAuth2UserUser;
+import com.allanweber.api.oauth.CustomOidcUserService;
 import com.allanweber.api.user.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -35,7 +37,10 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
-                .oauth2Login().successHandler(successHandler).and()
+                .oauth2Login().successHandler(successHandler)
+                .userInfoEndpoint().customUserType(ConnectOAuth2UserUser.class, "facebook")
+                .customUserType(ConnectOAuth2UserUser.class, "github")
+                .oidcUserService(new CustomOidcUserService()).and().and()
                 .exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
                 .authorizeRequests()
                 .antMatchers(OPTIONS, "/**").permitAll()

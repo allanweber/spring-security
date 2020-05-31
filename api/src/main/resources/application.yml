@@ -39,6 +39,7 @@ spring:
 application:
   email-verification-enabled: false
   verification-url: http://localhost:8080/registration/verify/email
+  app-url: http://localhost:4200
 
 #logging:
 #  level:

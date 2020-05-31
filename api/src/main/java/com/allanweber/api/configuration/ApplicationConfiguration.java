@@ -17,4 +17,7 @@ public class ApplicationConfiguration {
     private String verificationUrl;
 
     private boolean emailVerificationEnabled;
+
+    @NotBlank
+    private String appUrl;
 }
